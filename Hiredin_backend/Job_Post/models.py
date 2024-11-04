@@ -6,15 +6,9 @@ class JobCategory(models.Model):
 
     def __str__(self):
         return self.name
-class JobCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)
 
-    def __str__(self):
-        return self.name
-
-# Define the JobPost model
 class JobPost(models.Model):
-    # Employment type options
+
     FULL_TIME = 'Full-time'
     PART_TIME = 'Part-time'
     CONTRACT = 'Contract'
@@ -35,7 +29,7 @@ class JobPost(models.Model):
     salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPE)
     created_time = models.DateTimeField(auto_now_add=True)
-    employer = models.ForeignKey(Employer, on_delete=models.CASCADE, related_name="job_posts")
+    #employer = models.ForeignKey(Employer, on_delete=models.CASCADE, related_name="job_posts")
     category = models.ForeignKey(JobCategory, on_delete=models.SET_NULL, null=True, related_name="job_posts")
 
     def __str__(self):
