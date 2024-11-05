@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from .serialiazers import CustomTokenObtainPairSerializer
 from rest_framework import response
 from rest_framework.permissions import IsAuthenticated
-from .permissions import IsEmployee
+from .permissions import IsEmployee, IsEmployer
 from rest_framework.permissions import AllowAny
 
 
@@ -59,7 +59,15 @@ def login(request):
     return JsonResponse(serializer.errors, status=400)
 
 
+
+
 @api_view(['GET'])
 @permission_classes([IsEmployee])
 def example_view(request):
-    return response({"message": "protected endpoint"})
+    return JsonResponse({"message": "protected endpoint"})
+
+
+@api_view(['GET'])
+@permission_classes([IsEmployer])
+def test_view(request):
+    return JsonResponse({"message": "protected endpoint"})
