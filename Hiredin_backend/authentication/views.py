@@ -1,9 +1,14 @@
 from django.http import JsonResponse
 from .serialiazers import RegisterSerializer, LoginSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate
 from .serialiazers import CustomTokenObtainPairSerializer
+from rest_framework import response
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsEmployee
+from rest_framework.permissions import AllowAny
+
 
 @swagger_auto_schema(
     method='post',
@@ -11,6 +16,7 @@ from .serialiazers import CustomTokenObtainPairSerializer
     responses={201: 'User registered successfully!', 400: 'Validation error'}
 )
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
@@ -25,6 +31,7 @@ def register(request):
     responses={200: 'Login successful', 400: 'Validation error'}
 )
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login(request):
     serializer = LoginSerializer(data=request.data)
     
@@ -50,3 +57,9 @@ def login(request):
             return JsonResponse({"error": "Invalid credentials"}, status=400)
     
     return JsonResponse(serializer.errors, status=400)
+
+
+@api_view(['GET'])
+@permission_classes([IsEmployee])
+def example_view(request):
+    return response({"message": "protected endpoint"})
