@@ -13,6 +13,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,  # Disable session-based authentication
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"',
+        }
+    },
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
