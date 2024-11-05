@@ -41,9 +41,9 @@ def login(request):
             if token_serializer.is_valid():
                 tokens = token_serializer.validated_data
                 return JsonResponse({
-                    "message": "Login successful",
                     "access": tokens['access'],
-                    "refresh": tokens['refresh']
+                    "refresh": tokens['refresh'],
+                    "role": tokens['role']
                 }, status=200)
             return JsonResponse({"error": "Could not generate token"}, status=400)
         else:
