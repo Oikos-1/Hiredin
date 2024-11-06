@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from .serialiazers import RegisterSerializer, LoginSerializer
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate
@@ -8,6 +10,7 @@ from rest_framework import response
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsEmployee, IsEmployer
 from rest_framework.permissions import AllowAny
+
 
 
 @swagger_auto_schema(
@@ -25,6 +28,7 @@ def register(request):
     return JsonResponse(serializer.errors, status=400)
 
 
+@csrf_exempt
 @swagger_auto_schema(
     method='post',
     request_body=LoginSerializer,
