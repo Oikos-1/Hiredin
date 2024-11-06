@@ -13,7 +13,6 @@ from rest_framework.permissions import AllowAny
 
 
 
-@csrf_exempt
 @swagger_auto_schema(
     method='post',
     request_body=RegisterSerializer,
