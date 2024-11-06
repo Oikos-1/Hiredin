@@ -1,11 +1,8 @@
 from django.http import JsonResponse
 from .serialiazers import RegisterSerializer, LoginSerializer
-<<<<<<< HEAD
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-=======
 from rest_framework.decorators import api_view, permission_classes
->>>>>>> 5a1cbd9714047de7e0218fed62e6d75fbba10780
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import authenticate
 from .serialiazers import CustomTokenObtainPairSerializer
