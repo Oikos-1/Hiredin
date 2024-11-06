@@ -1,22 +1,55 @@
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
-from .models import EmployerProfile,EmployeeProfile
+from rest_framework.response import Response
 from .serializers import EmployeeSerializer, EmployerSerializer
-from django.shortcuts import get_object_or_404
+from authentication.permissions import IsEmployee, IsEmployer
+from .models import *
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create_profile(request):
-    if request.user.role == "Employee":
-        serializer = EmployeeSerializer(data=request.data)
+class CreateEmployeeProfile(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated,IsEmployee]
+    serializer_class = EmployeeSerializer
+
+    def create(self, request, *args, **kwargs):
+        if EmployeeProfile.objects.filter(user=self.request.user).exists():
+            return Response({"error": "You have already created"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    elif request.user.role == "Employer":
-        serializer = EmployerSerializer(data=request.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreateEmployerProfile(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated,IsEmployer]
+    serializer_class = EmployerSerializer
+
+    def create(self, request, *args, **kwargs):
+        if EmployerProfile.objects.filter(user=self.request.user).exists():
+            return Response({"error": "You have already created"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response({"error": "User role is not recognized."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EmployeeprofileRUD(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated,IsEmployee]
+    serializer_class = EmployeeSerializer
+    queryset = EmployeeProfile.objects.all()
+
+    def get_object(self):
+        return self.get_queryset().filter(user=self.request.user).first()
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+class EmployerprofileRUD(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated,IsEmployer]
+    serializer_class = EmployerSerializer
+    queryset = EmployerProfile.objects.all()
+
+    def get_object(self):
+        return self.get_queryset().filter(user=self.request.user).first()
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
