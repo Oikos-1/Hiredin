@@ -13,26 +13,30 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+
 SWAGGER_SETTINGS = {
-    'USE_SESSION_AUTH': False,  # Disable session-based authentication
     'SECURITY_DEFINITIONS': {
         'Bearer': {
             'type': 'apiKey',
+            'description': 'JWT authorization using Bearer scheme. Example: "Bearer {token}"',
             'name': 'Authorization',
             'in': 'header',
-            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"',
         }
     },
+    'USE_SESSION_AUTH': False,
+    'DEFAULT_API_URL': 'http://localhost:8000',
 }
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-}
+
 
 from datetime import timedelta
 
@@ -59,9 +63,6 @@ INSTALLED_APPS = [
     "User",
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
