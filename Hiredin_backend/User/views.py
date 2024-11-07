@@ -32,16 +32,14 @@ class CreateEmployerProfile(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class EmployeeprofileRUD(generics.RetrieveUpdateDestroyAPIView):
+class Employeeprofileget(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated,IsEmployee]
     serializer_class = EmployeeSerializer
     queryset = EmployeeProfile.objects.all()
 
     def get_object(self):
         return self.get_queryset().filter(user=self.request.user).first()
-    
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+
 
 class EmployerprofileRUD(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated,IsEmployer]
